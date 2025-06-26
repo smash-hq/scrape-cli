@@ -14,15 +14,15 @@ func AutoRunProject() {
 		panic("Unable to get the current working directory：" + err.Error())
 	}
 	if isGoProject(cwd) {
-		RunGolangProject(cwd)
+		RunGolangProject()
 	} else if isNodeProject(cwd) {
-		RunNodeProject(cwd)
+		RunNodeProject()
 	} else {
 		fmt.Println("⚠️ Unable to detect project type. No run action performed.")
 	}
 }
 
-func RunGolangProject(projectDir string) {
+func RunGolangProject() {
 	fmt.Println("▶ Checking Go installation...")
 	if _, err := exec.LookPath("go"); err != nil {
 		fmt.Println("❌ Go is not installed or not in PATH.")
@@ -46,16 +46,11 @@ func RunGolangProject(projectDir string) {
 	}
 }
 
-func RunNodeProject(projectDir string) {
+func RunNodeProject() {
 	fmt.Println("▶ Detected Node.js project.")
 
 	if _, err := exec.LookPath("npm"); err != nil {
 		fmt.Println("❌ npm not found. Please install Node.js and npm.")
-		return
-	}
-
-	if err := os.Chdir(projectDir); err != nil {
-		fmt.Printf("❌ Failed to enter directory: %v\n", err)
 		return
 	}
 
@@ -81,8 +76,9 @@ func outputBinary() string {
 
 func runCommand(name string, args ...string) error {
 	cmd := exec.Command(name, args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stdout // 显示标准输出
+	cmd.Stderr = os.Stderr // 显示错误输出
+	cmd.Stdin = os.Stdin   // 允许用户交互（如按键输入）
 	return cmd.Run()
 }
 
