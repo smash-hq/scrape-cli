@@ -35,7 +35,7 @@ func RunGolangProject(projectDir string) {
 		return
 	}
 	fmt.Println("🔧 Building `main.go`...")
-	if err := runCommand("go", "build", "-o", outputBinary(), "main.go"); err != nil {
+	if err := runCommand("go", "build", "-o", outputBinary()); err != nil {
 		fmt.Println("❌ Failed to build project.")
 		return
 	}
