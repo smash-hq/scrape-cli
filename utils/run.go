@@ -36,13 +36,13 @@ func RunGolangProject() {
 	}
 	fmt.Println("🔧 Building `main.go`...")
 	if err := runCommand("go", "build", "-o", outputBinary()); err != nil {
-		fmt.Println("❌ Failed to build project.")
+		fmt.Printf("❌ Failed to build project: %v\n", err)
 		return
 	}
 
 	fmt.Printf("🚀 Running `%s`...\n", outputBinary())
 	if err := runCommand(outputBinary()); err != nil {
-		fmt.Println("❌ Failed to run project.")
+		fmt.Printf("❌ Failed to run project: %v\n", err)
 	}
 }
 
@@ -56,13 +56,13 @@ func RunNodeProject() {
 
 	fmt.Println("📦 Running `npm install`...")
 	if err := runCommand("npm", "install"); err != nil {
-		fmt.Println("❌ npm install failed.")
+		fmt.Printf("❌ npm install failed: %v\n", err)
 		return
 	}
 
 	fmt.Println("🚀 Running `node index.js`...")
 	if err := runCommand("node", "index.js"); err != nil {
-		fmt.Println("❌ Failed to run node project.")
+		fmt.Printf("❌ Failed to run node project: %v\n", err)
 	}
 }
 
@@ -79,7 +79,11 @@ func runCommand(name string, args ...string) error {
 	cmd.Stdout = os.Stdout // 显示标准输出
 	cmd.Stderr = os.Stderr // 显示错误输出
 	cmd.Stdin = os.Stdin   // 允许用户交互（如按键输入）
-	return cmd.Run()
+	err := cmd.Run()
+	if err != nil {
+		fmt.Printf("⚠️ Command `%s %v` failed: %v\n", name, args, err)
+	}
+	return err
 }
 
 func isGoProject(projectDir string) bool {
