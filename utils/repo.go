@@ -3,7 +3,6 @@ package utils
 import (
 	"archive/zip"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"io"
 	nethttp "net/http"
 	"os"
@@ -49,7 +48,7 @@ func CloneRepo(src Repo, localPath string) (string, error) {
 	}(resp.Body)
 
 	if resp.StatusCode != nethttp.StatusOK {
-		log.Info("Request failed: %v", resp.Status)
+		fmt.Printf("Request failed: %v", resp.Status)
 		return "", fmt.Errorf("download git code failed: status code %d", resp.StatusCode)
 	}
 
