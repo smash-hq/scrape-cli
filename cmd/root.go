@@ -52,12 +52,22 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.PersistentFlags().BoolVarP(&versionFlag, "version", "v", false, "Print the version number of scrape-cli")
-	rootCmd.PersistentFlags().StringVarP((*string)(&template), "tmpl", "t", "", "Generate code template (e.g. --tmpl start_with_golang), "+
-		"When creating with command line, the parameter can not be empty, support params: "+utils.GetProjectsStr())
-	rootCmd.PersistentFlags().StringVarP(&templateName, "name", "n", defaultActorName, "Specify the folder name for the generated template")
-	rootCmd.PersistentFlags().BoolVarP(&createFlag, "create", "c", false, "Generate code template by interactively")
-	rootCmd.PersistentFlags().BoolVarP(&runFlag, "run", "r", false, "Quickly launch your actor")
+	rootCmd.PersistentFlags().BoolVarP(&versionFlag, "version", "v", false,
+		"Print the version number of scrape-cli")
+
+	rootCmd.PersistentFlags().StringVarP((*string)(&template), "tmpl", "t", "",
+		"Specify the template type to generate the actor code (e.g. --tmpl start_with_golang)\n"+
+			"This is required when creating via command line\n"+
+			"Supported values: "+utils.GetProjectsStr())
+
+	rootCmd.PersistentFlags().StringVarP(&templateName, "name", "n", defaultActorName,
+		"Set the folder name for the generated template")
+
+	rootCmd.PersistentFlags().BoolVarP(&createFlag, "create", "c", false,
+		"Create a new actor project interactively")
+
+	rootCmd.PersistentFlags().BoolVarP(&runFlag, "run", "r", false,
+		"Build and run the current actor project immediately")
 }
 
 func createTemplate() {
