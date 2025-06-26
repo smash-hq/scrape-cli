@@ -8,37 +8,50 @@ type Language string
 
 const (
 	NodeJS Language = "js"
+	TS     Language = "ts"
 	Golang Language = "golang"
 )
 
 const (
 	URLStartWithGolang gitUrl = "https://github.com/scrapeless-ai/actor-template-go.git"
-	URLStartWithNode   gitUrl = "https://github.com/scrapeless-ai/actor-template-ts.git"
+	URLStartWithNodeJS gitUrl = "https://github.com/scrapeless-ai/actor-template-node.git"
+	URLStartWithTS     gitUrl = "https://github.com/scrapeless-ai/actor-template-ts.git"
 )
 
 const (
 	ProjectStartWithGolang Project = "start_with_golang"
-	ProjectStartWithNode   Project = "start_with_node"
+	ProjectStartWithNodeJS Project = "start_with_node_js"
+	ProjectStartWithTS     Project = "start_with_ts"
 )
 
 var (
 	ProjectMap = map[Project]gitUrl{
 		ProjectStartWithGolang: URLStartWithGolang,
-		ProjectStartWithNode:   URLStartWithNode,
+		ProjectStartWithNodeJS: URLStartWithNodeJS,
+		ProjectStartWithTS:     URLStartWithTS,
 	}
 )
 
 var (
 	DevLanguage = map[Project]Language{
 		ProjectStartWithGolang: Golang,
-		ProjectStartWithNode:   NodeJS,
+		ProjectStartWithNodeJS: NodeJS,
+		ProjectStartWithTS:     TS,
 	}
 )
 
-func GetProjects() string {
+func GetProjectsStr() string {
 	var projects []string
 	for project := range ProjectMap {
 		projects = append(projects, string(project))
 	}
-	return strings.Join(projects, ", ")
+	return strings.Join(projects, "、")
+}
+
+func GetProjects() []string {
+	var projects []string
+	for project := range ProjectMap {
+		projects = append(projects, string(project))
+	}
+	return projects
 }

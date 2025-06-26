@@ -59,9 +59,9 @@ func updateActorJson(repo string, name string) error {
 }
 
 func updateModOrPackage(dir, targetName string, language Language) error {
-	var err error = nil
+	var err error
 	switch language {
-	case NodeJS:
+	case NodeJS, TS:
 		err = updatePackageFile(dir, targetName)
 	case Golang:
 		err = updateModFile(dir, targetName)

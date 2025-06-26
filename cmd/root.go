@@ -54,7 +54,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.PersistentFlags().BoolVarP(&versionFlag, "version", "v", false, "Print the version number of scrape-cli")
 	rootCmd.PersistentFlags().StringVarP((*string)(&template), "tmpl", "t", "", "Generate code template (e.g. --tmpl start_with_golang), "+
-		"When creating with command line, the parameter can not be empty")
+		"When creating with command line, the parameter can not be empty, support params: "+utils.GetProjectsStr())
 	rootCmd.PersistentFlags().StringVarP(&templateName, "name", "n", defaultActorName, "Specify the folder name for the generated template")
 	rootCmd.PersistentFlags().BoolVarP(&createFlag, "create", "c", false, "Generate code template by interactively")
 	rootCmd.PersistentFlags().BoolVarP(&runFlag, "run", "r", false, "Quickly launch your actor")
@@ -64,18 +64,17 @@ func createTemplate() {
 	url, ok := utils.ProjectMap[template]
 	language := utils.DevLanguage[template]
 	if !ok {
-		fmt.Printf("Could not find the selected template: %s. Support list: %s\n", template, utils.GetProjects())
+		fmt.Printf("Could not find the selected template: %s. Support list: %s\n", template, utils.GetProjectsStr())
 		return
 	}
 	utils.CreateTemplate(url, templateName, language)
-	fmt.Printf("Project '%s' created using '%s' template\n", templateName, template)
 }
 
 func interactiveCreateTemplate() {
 	// 交互选择模板
 	prompt := promptui.Select{
 		Label: "Select a template",
-		Items: []string{string(utils.ProjectStartWithGolang), string(utils.ProjectStartWithNode)},
+		Items: utils.GetProjects(),
 	}
 	_, templateResult, err := prompt.Run()
 	if err != nil {
