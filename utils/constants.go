@@ -4,10 +4,16 @@ import "strings"
 
 type gitUrl string
 type Project string
+type Language string
+
+const (
+	NodeJS Language = "js"
+	Golang Language = "golang"
+)
 
 const (
 	URLStartWithGolang gitUrl = "https://github.com/scrapeless-ai/actor-template-go.git"
-	URLStartWithNode   gitUrl = "https://github.com/scrapeless-ai/sdk-node.git"
+	URLStartWithNode   gitUrl = "https://github.com/scrapeless-ai/actor-template-ts.git"
 )
 
 const (
@@ -19,6 +25,13 @@ var (
 	ProjectMap = map[Project]gitUrl{
 		ProjectStartWithGolang: URLStartWithGolang,
 		ProjectStartWithNode:   URLStartWithNode,
+	}
+)
+
+var (
+	DevLanguage = map[Project]Language{
+		ProjectStartWithGolang: Golang,
+		ProjectStartWithNode:   NodeJS,
 	}
 )
 

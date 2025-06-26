@@ -11,27 +11,27 @@ import (
 func AutoRunProject() {
 	cwd, err := os.Getwd()
 	if err != nil {
-		panic("Unable to get the current working directory：" + err.Error())
+		fmt.Println("Unable to get the current working directory：" + err.Error())
 	}
 	if isGoProject(cwd) {
 		RunGolangProject()
 	} else if isNodeProject(cwd) {
 		RunNodeProject()
 	} else {
-		fmt.Println("⚠️ Unable to detect project type. No run action performed.")
+		fmt.Println("⚠️ Unable to detect project type. No run action performed")
 	}
 }
 
 func RunGolangProject() {
 	fmt.Println("▶ Checking Go installation...")
 	if _, err := exec.LookPath("go"); err != nil {
-		fmt.Println("❌ Go is not installed or not in PATH.")
+		fmt.Println("❌ Go is not installed or not in PATH")
 		return
 	}
 
 	fmt.Println("🔧 Running `go mod tidy`...")
 	if err := runCommand("go", "mod", "tidy"); err != nil {
-		fmt.Println("❌ `go mod tidy` failed.")
+		fmt.Println("❌ `go mod tidy` failed")
 		return
 	}
 	fmt.Println("🔧 Building `main.go`...")
@@ -47,10 +47,10 @@ func RunGolangProject() {
 }
 
 func RunNodeProject() {
-	fmt.Println("▶ Detected Node.js project.")
+	fmt.Println("▶ Detected Node.js project")
 
 	if _, err := exec.LookPath("npm"); err != nil {
-		fmt.Println("❌ npm not found. Please install Node.js and npm.")
+		fmt.Println("❌ npm not found. Please install Node.js and npm")
 		return
 	}
 

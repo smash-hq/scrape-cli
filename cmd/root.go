@@ -62,12 +62,13 @@ func init() {
 
 func createTemplate() {
 	url, ok := utils.ProjectMap[template]
+	language := utils.DevLanguage[template]
 	if !ok {
 		fmt.Printf("Could not find the selected template: %s. Support list: %s\n", template, utils.GetProjects())
 		return
 	}
-	utils.CreateTemplate(url, templateName)
-	fmt.Printf("Project '%s' created using '%s' template.\n", templateName, template)
+	utils.CreateTemplate(url, templateName, language)
+	fmt.Printf("Project '%s' created using '%s' template\n", templateName, template)
 }
 
 func interactiveCreateTemplate() {
@@ -76,24 +77,24 @@ func interactiveCreateTemplate() {
 		Label: "Select a template",
 		Items: []string{string(utils.ProjectStartWithGolang), string(utils.ProjectStartWithNode)},
 	}
-	_, result, err := prompt.Run()
+	_, templateResult, err := prompt.Run()
 	if err != nil {
 		fmt.Printf("Prompt failed: %v\n", err)
 		return
 	}
-	template = utils.Project(result)
+	template = utils.Project(templateResult)
 
 	// 输入项目名
 	namePrompt := promptui.Prompt{
 		Label:   "Project name",
 		Default: defaultActorName,
 	}
-	result, err = namePrompt.Run()
+	projectNameResult, err := namePrompt.Run()
 	if err != nil {
 		fmt.Printf("Prompt failed: %v\n", err)
 		return
 	}
-	templateName = result
+	templateName = projectNameResult
 
 	createTemplate()
 }

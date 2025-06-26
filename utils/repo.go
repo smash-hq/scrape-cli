@@ -14,7 +14,7 @@ type Repo struct {
 	URL         string // 仓库克隆地址，例如：https://github.com/org/repo.git
 	Branch      string // 需要拉取的分支名，例如：main、dev
 	AccessToken string // GitHub Token（用于认证，公开仓库不需要认证）
-	TargetName  string // GitHub Token（用于认证，公开仓库不需要认证）
+	TargetName  string // 存储文件夹名，以及用于修改go.mod/package.json中文的model/name
 }
 
 func CloneRepo(src Repo, localPath string) (string, error) {
