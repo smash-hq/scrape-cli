@@ -69,7 +69,7 @@ func RunNodeProject() {
 // outputBinary 返回构建输出的文件名（带平台判断）
 func outputBinary() string {
 	if runtime.GOOS == "windows" {
-		return "main.exe"
+		return "./main.exe"
 	}
 	return "./main"
 }
