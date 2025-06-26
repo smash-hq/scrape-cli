@@ -48,6 +48,11 @@ scrape-cli --tmpl start_with_golang --name my-actor
 ```
 
 Creates a folder **my-actor** using the Golang actor template.
+Run your actor:
+```
+cd my-actor
+scrape-cli --run
+```
 
 ### 📌 3. Show Version
 
@@ -80,6 +85,11 @@ scrape-cli --create
 # Template Source: https://github.com/scrapeless-ai/actor-template-go.git
 # Template generated in \your_workbase\my_actor
 # Project 'my_actor' created using 'start_with_golang' template.
+
+cd my-actor
+scrape-cli --run
+# Output:
+# Launch my-actor logs...
 ```
 
 ## 🛠️ Development
