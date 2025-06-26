@@ -28,8 +28,10 @@ func Execute() {
 
 var rootCmd = &cobra.Command{
 	Use:   "scrape-cli",
-	Short: "Scrapeless operation from the command line",
-	Long:  `Scrapeless operation from the command line`,
+	Short: "Command-line interface for managing Scrapeless actors",
+	Long: `scrape-cli is a command-line tool for creating, building, and running Scrapeless actor projects.
+It supports interactive project generation, template-based initialization, and quick local execution.`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 		if versionFlag {
 			fmt.Printf("scrapeless version: %s\n", Version)
@@ -56,18 +58,16 @@ func init() {
 		"Print the version number of scrape-cli")
 
 	rootCmd.PersistentFlags().StringVarP((*string)(&template), "tmpl", "t", "",
-		"Specify the template type to generate the actor code (e.g. --tmpl start_with_golang)\n"+
-			"This is required when creating via command line\n"+
-			"Supported values: "+utils.GetProjectsStr())
+		"Specify the template type to generate the actor code template, this is required when creating via command line\nSupported values: "+utils.GetProjectsStr())
 
 	rootCmd.PersistentFlags().StringVarP(&templateName, "name", "n", defaultActorName,
-		"Set the folder name for the generated template")
+		"Set the folder name for the generated actor code template")
 
 	rootCmd.PersistentFlags().BoolVarP(&createFlag, "create", "c", false,
-		"Create a new actor project interactively")
+		"Create a new actor code template interactively")
 
 	rootCmd.PersistentFlags().BoolVarP(&runFlag, "run", "r", false,
-		"Build and run the current actor project immediately")
+		"Build and run the current actor code immediately")
 }
 
 func createTemplate() {
