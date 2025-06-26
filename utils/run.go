@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 )
 
 func AutoRunProject() {
@@ -28,26 +29,19 @@ func RunGolangProject(projectDir string) {
 		return
 	}
 
-	//fmt.Println("📁 Entering project directory:", projectDir)
-	//if err := os.Chdir(projectDir); err != nil {
-	//	fmt.Printf("❌ Failed to enter directory: %v\n", err)
-	//	return
-	//}
-
 	fmt.Println("🔧 Running `go mod tidy`...")
 	if err := runCommand("go", "mod", "tidy"); err != nil {
 		fmt.Println("❌ `go mod tidy` failed.")
 		return
 	}
+	fmt.Println("🔧 Building `main.go`...")
+	if err := runCommand("go", "build", "-o", outputBinary(), "main.go"); err != nil {
+		fmt.Println("❌ Failed to build project.")
+		return
+	}
 
-	//mainPath := filepath.Join(".", "main.go")
-	//if _, err := os.Stat(mainPath); os.IsNotExist(err) {
-	//	fmt.Println("⚠️ main.go not found. Cannot execute.")
-	//	return
-	//}
-
-	fmt.Println("🚀 Running `go run main.go`...")
-	if err := runCommand("go", "run", "main.go"); err != nil {
+	fmt.Printf("🚀 Running `%s`...\n", outputBinary())
+	if err := runCommand(outputBinary()); err != nil {
 		fmt.Println("❌ Failed to run project.")
 	}
 }
@@ -75,6 +69,14 @@ func RunNodeProject(projectDir string) {
 	if err := runCommand("node", "index.js"); err != nil {
 		fmt.Println("❌ Failed to run node project.")
 	}
+}
+
+// outputBinary 返回构建输出的文件名（带平台判断）
+func outputBinary() string {
+	if runtime.GOOS == "windows" {
+		return "main.exe"
+	}
+	return "./main"
 }
 
 func runCommand(name string, args ...string) error {
