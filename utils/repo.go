@@ -14,11 +14,12 @@ type Repo struct {
 	URL         string // 仓库克隆地址，例如：https://github.com/org/repo.git
 	Branch      string // 需要拉取的分支名，例如：main、dev
 	AccessToken string // GitHub Token（用于认证，公开仓库不需要认证）
+	TargetName  string // GitHub Token（用于认证，公开仓库不需要认证）
 }
 
 func CloneRepo(src Repo, localPath string) (string, error) {
 	fmt.Printf("Template Source: %s\n", src.URL)
-	localCodePath := filepath.Join(localPath, "code")
+	localCodePath := filepath.Join(localPath, src.TargetName)
 
 	owner, repoName := ParseGitURL(src.URL)
 	ref := src.Branch // 可以是分支或 tag
