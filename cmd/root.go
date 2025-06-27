@@ -64,7 +64,7 @@ func init() {
 		"Set the folder name for the generated actor code template")
 
 	rootCmd.PersistentFlags().BoolVarP(&createFlag, "create", "c", false,
-		"Create a new actor code template interactively")
+		"Generate a new actor code template interactively")
 
 	rootCmd.PersistentFlags().BoolVarP(&runFlag, "run", "r", false,
 		"Build and run the current actor code immediately")

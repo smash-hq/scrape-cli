@@ -15,6 +15,11 @@ func CreateTemplate(url gitUrl, targetName string, language Language) {
 		log.Println("Unable to get the current working directory：" + err.Error())
 		return
 	}
+	dir, err := os.Stat(filepath.Join(cwd, targetName))
+	if !os.IsNotExist(err) || dir.IsDir() {
+		fmt.Printf("⚠️ %s already exists.", targetName)
+		return
+	}
 	repo, err := CloneRepo(Repo{
 		URL:         string(url),
 		Branch:      "main",
@@ -23,15 +28,18 @@ func CreateTemplate(url gitUrl, targetName string, language Language) {
 	}, cwd)
 	if err != nil {
 		fmt.Printf("Error: %v", err)
+		return
 	}
 	// 根据语言修改go.mod/package.json
 	err = updateModOrPackage(repo, targetName, language)
 	if err != nil {
 		fmt.Printf("Template generate failed: %v\n", err)
+		return
 	}
 	err = updateActorJson(repo, targetName)
 	if err != nil {
 		fmt.Printf("Template generate failed: %v\n", err)
+		return
 	}
 	fmt.Printf("Template generated in %s\n", repo)
 }
@@ -65,6 +73,8 @@ func updateModOrPackage(dir, targetName string, language Language) error {
 		err = updatePackageFile(dir, targetName)
 	case Golang:
 		err = updateModFile(dir, targetName)
+	default:
+		err = fmt.Errorf("unsupport language: %s", language)
 	}
 	return err
 }
