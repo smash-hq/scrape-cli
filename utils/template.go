@@ -39,7 +39,7 @@ func CreateTemplate(url gitUrl, targetName string, language Language) {
 		fmt.Printf("Error: %v", err)
 		return
 	}
-	// 根据语言修改go.mod/package.json
+	// update go.mod/package.json
 	err = updateModOrPackage(repo, targetName, language)
 	if err != nil {
 		fmt.Printf("Template generate failed: %v\n", err)
@@ -56,19 +56,17 @@ func CreateTemplate(url gitUrl, targetName string, language Language) {
 func updateActorJson(repo string, name string) error {
 	path := filepath.Join(repo, ".actor", "actor.json")
 
-	// 读取原始 JSON 文件
+	// read origin JSON file
 	content, err := os.ReadFile(path)
 	if err != nil {
 		return fmt.Errorf("❌ Failed to read actor.json: %v", err)
 	}
 
-	// 使用 sjson 设置 name 字段
 	updated, err := sjson.SetBytes(content, "name", name)
 	if err != nil {
 		return fmt.Errorf("❌ Failed to update actor.json: %v", err)
 	}
 
-	// 写回文件
 	if err := os.WriteFile(path, updated, 0644); err != nil {
 		return fmt.Errorf("❌ Failed to write actor.json: %v", err)
 	}
@@ -94,7 +92,6 @@ func updatePackageFile(dir, name string) error {
 	if err != nil {
 		return fmt.Errorf("❌ Failed to read package.json: %v", err)
 	}
-	// 使用 sjson 设置 name 字段
 	updated, err := sjson.SetBytes(content, "name", name)
 	if err != nil {
 		return fmt.Errorf("❌ Failed to update actor.json: %v", err)

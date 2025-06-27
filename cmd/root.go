@@ -84,7 +84,7 @@ func interactiveCreateTemplate() {
 	var selected string
 	var projectName string
 
-	// 选择模板
+	// choose tmpl
 	templates := utils.GetProjects()
 	templatePrompt := &survey.Select{
 		Message: "Select a template",
@@ -98,7 +98,7 @@ func interactiveCreateTemplate() {
 	}
 	template = utils.Project(selected)
 
-	// 输入项目名
+	// project name
 	namePrompt := &survey.Input{
 		Message: "Enter the name of the template",
 		Default: defaultActorName,

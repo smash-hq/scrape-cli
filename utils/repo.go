@@ -11,10 +11,10 @@ import (
 )
 
 type Repo struct {
-	URL         string // 仓库克隆地址，例如：https://github.com/org/repo.git
-	Branch      string // 需要拉取的分支名，例如：main、dev
-	AccessToken string // GitHub Token（用于认证，公开仓库不需要认证）
-	TargetName  string // 存储文件夹名，以及用于修改go.mod/package.json中文的model/name
+	URL         string // git addr，e.g. https://github.com/org/repo.git
+	Branch      string // main、dev
+	AccessToken string // GitHub Token
+	TargetName  string // storage dir nane，update go.mod/package.json model/name
 }
 
 func CloneRepo(src Repo, localPath string) (string, error) {
@@ -22,7 +22,7 @@ func CloneRepo(src Repo, localPath string) (string, error) {
 	localCodePath := filepath.Join(localPath, src.TargetName)
 
 	owner, repoName := ParseGitURL(src.URL)
-	ref := src.Branch // 可以是分支或 tag
+	ref := src.Branch
 
 	zipURL := fmt.Sprintf("https://api.github.com/repos/%s/%s/zipball/%s", owner, repoName, ref)
 	req, err := nethttp.NewRequest("GET", zipURL, nil)
@@ -63,6 +63,9 @@ func CloneRepo(src Repo, localPath string) (string, error) {
 		return "", err
 	}
 	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		return "", err
+	}
 	err = out.Close()
 	if err != nil {
 		return "", err
@@ -90,7 +93,7 @@ func ParseGitURL(url string) (owner, repo string) {
 	return owner, repo
 }
 
-// UnzipToTargetDir 解压 zipPath 到 targetDir（剥离最外层目录）
+// UnzipToTargetDir unzip zipPath to targetDir
 func UnzipToTargetDir(zipPath, targetDir string) error {
 	r, err := zip.OpenReader(zipPath)
 	if err != nil {
@@ -105,9 +108,7 @@ func UnzipToTargetDir(zipPath, targetDir string) error {
 
 	var rootPrefix string
 
-	// 遍历压缩文件条目
 	for _, f := range r.File {
-		// 获取剥离后的路径（去掉 zip 中的首层目录）
 		if rootPrefix == "" {
 			parts := strings.SplitN(f.Name, "/", 2)
 			if len(parts) == 2 {
@@ -122,7 +123,6 @@ func UnzipToTargetDir(zipPath, targetDir string) error {
 
 		absPath := filepath.Join(targetDir, relPath)
 
-		// 如果是目录，创建目录
 		if f.FileInfo().IsDir() {
 			err := os.MkdirAll(absPath, os.ModePerm)
 			if err != nil {
@@ -131,18 +131,16 @@ func UnzipToTargetDir(zipPath, targetDir string) error {
 			continue
 		}
 
-		// 创建所需目录
+		// create dir
 		if err := os.MkdirAll(filepath.Dir(absPath), os.ModePerm); err != nil {
 			return err
 		}
 
-		// 打开 zip 中的文件
 		rc, err := f.Open()
 		if err != nil {
 			return err
 		}
 
-		// 创建目标文件
 		outFile, err := os.Create(absPath)
 		if err != nil {
 			err := rc.Close()

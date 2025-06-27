@@ -66,7 +66,7 @@ func RunNodeProject() {
 	}
 }
 
-// outputBinary 返回构建输出的文件名（带平台判断）
+// outputBinary
 func outputBinary() string {
 	if runtime.GOOS == "windows" {
 		return "./main.exe"
@@ -76,9 +76,9 @@ func outputBinary() string {
 
 func runCommand(name string, args ...string) error {
 	cmd := exec.Command(name, args...)
-	cmd.Stdout = os.Stdout // 显示标准输出
-	cmd.Stderr = os.Stderr // 显示错误输出
-	cmd.Stdin = os.Stdin   // 允许用户交互（如按键输入）
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
 	err := cmd.Run()
 	if err != nil {
 		fmt.Printf("⚠️ Command `%s %v` failed: %v\n", name, args, err)

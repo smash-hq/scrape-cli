@@ -86,17 +86,18 @@ scrape-cli --version
 
 ```
 scrape-cli --create
-# Use the arrow keys to navigate: ↓ ↑ → ←
-# ? Select a template:  [Use arrows]
-#  > start_with_golang
-#    start_with_node
+# ? Select a template  [Use arrows to move, type to filter, ? for more help]
+# > start_with_golang
+#   start_with_node_js
+#   start_with_ts
+# ？Enter the name of the template [? for help] (my-actor)
 #
-# ? Project name: my-actor
+# ? Enter the name of the template my-actor
+
 
 # Output:
 # Template Source: https://github.com/scrapeless-ai/actor-template-go.git
-# Template generated in \your_workbase\my_actor
-# Project 'my_actor' created using 'start_with_golang' template.
+# Template generated in your_work_base\my-actor
 
 cd my-actor
 scrape-cli --run

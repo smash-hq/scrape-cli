@@ -7,7 +7,7 @@ INSTALL_DIR="$HOME/.local/bin"
 
 echo "📦 Installing scrape-cli..."
 
-# 获取最新release版本号（例如 v2.0.0）
+#  get latest release version（e.g. v2.0.0）
 VERSION=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name":' | head -1 | sed -E 's/.*"([^"]+)".*/\1/')
 if [[ -z "$VERSION" ]]; then
   echo "❌ Failed to get latest release version."
@@ -33,7 +33,6 @@ case "$ARCH" in
   *) echo "❌ Unsupported architecture: $ARCH" && exit 1 ;;
 esac
 
-# 根据 .goreleaser.yaml 规则拼接文件名和扩展名
 FILENAME="scrape-cli_${OS}_${ARCH}"
 EXT="tar.gz"
 [[ "$OS" == "windows" ]] && EXT="zip"
