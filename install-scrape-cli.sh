@@ -3,10 +3,17 @@
 set -e
 
 REPO="smash-hq/scrape-cli"
-VERSION="${1:-v2.0.0}"
 INSTALL_DIR="$HOME/.local/bin"
 
-echo "📦 Installing scrape-cli $VERSION..."
+echo "📦 Installing scrape-cli..."
+
+# 获取最新release版本号（例如 v2.0.0）
+VERSION=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name":' | head -1 | sed -E 's/.*"([^"]+)".*/\1/')
+if [[ -z "$VERSION" ]]; then
+  echo "❌ Failed to get latest release version."
+  exit 1
+fi
+echo "🔎 Latest version: $VERSION"
 
 # Detect OS
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
@@ -17,7 +24,7 @@ case "$OS" in
   *) echo "❌ Unsupported OS: $OS" && exit 1 ;;
 esac
 
-# Detect ARCH
+# Detect architecture
 ARCH="$(uname -m)"
 case "$ARCH" in
   x86_64 | amd64) ARCH="amd64" ;;
@@ -26,6 +33,7 @@ case "$ARCH" in
   *) echo "❌ Unsupported architecture: $ARCH" && exit 1 ;;
 esac
 
+# 根据 .goreleaser.yaml 规则拼接文件名和扩展名
 FILENAME="scrape-cli_${OS}_${ARCH}"
 EXT="tar.gz"
 [[ "$OS" == "windows" ]] && EXT="zip"
@@ -33,10 +41,10 @@ EXT="tar.gz"
 TARBALL="$FILENAME.$EXT"
 DOWNLOAD_URL="https://github.com/$REPO/releases/download/$VERSION/$TARBALL"
 
-echo "🔽 Downloading from $DOWNLOAD_URL..."
-curl -fsSL -o "$TARBALL" "$DOWNLOAD_URL"
+echo "🔽 Downloading $DOWNLOAD_URL..."
+curl -fSL -o "$TARBALL" "$DOWNLOAD_URL"
 
-echo "📂 Extracting..."
+echo "📂 Extracting $TARBALL..."
 if [[ "$EXT" == "zip" ]]; then
   unzip -o "$TARBALL"
 else
@@ -54,10 +62,36 @@ mv -f "$BINARY_NAME" "$INSTALL_DIR/"
 
 echo "✅ Installed at: $INSTALL_DIR/$BINARY_NAME"
 
-# Check if in PATH
+# Check if $INSTALL_DIR is in PATH
 if ! echo "$PATH" | grep -q "$INSTALL_DIR"; then
-  echo "🔔 Add the following to your shell config (~/.bashrc or ~/.zshrc):"
-  echo "    export PATH=\"\$HOME/.local/bin:\$PATH\""
+  if [[ "$OS" == "linux" || "$OS" == "darwin" ]]; then
+    # Try to detect user shell config file
+    SHELL_CONFIG=""
+    if [ -n "$ZSH_VERSION" ]; then
+      SHELL_CONFIG="$HOME/.zshrc"
+    elif [ -n "$BASH_VERSION" ]; then
+      SHELL_CONFIG="$HOME/.bashrc"
+    else
+      # fallback
+      SHELL_CONFIG="$HOME/.profile"
+    fi
+
+    if ! grep -q "$INSTALL_DIR" "$SHELL_CONFIG" 2>/dev/null; then
+      echo "🔔 Adding install directory to your PATH in $SHELL_CONFIG ..."
+      echo "export PATH=\"\$HOME/.local/bin:\$PATH\"" >> "$SHELL_CONFIG"
+      echo "Please restart your terminal or run 'source $SHELL_CONFIG' to apply the changes."
+    else
+      echo "🔔 Your PATH already contains the install directory."
+    fi
+
+  elif [[ "$OS" == "windows" ]]; then
+    echo "🔔 Please manually add $INSTALL_DIR to your system PATH environment variable:"
+    echo "   Steps for Windows 10:"
+    echo "     1. Open 'System Properties' -> 'Advanced' -> 'Environment Variables'"
+    echo "     2. Under 'User variables', find and select PATH, then click Edit"
+    echo "     3. Add a new entry: $INSTALL_DIR"
+    echo "     4. Save and restart your command prompt"
+  fi
 else
   echo "🚀 You can now run: $BINARY_NAME"
 fi
