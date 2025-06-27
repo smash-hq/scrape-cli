@@ -15,9 +15,12 @@ func CreateTemplate(url gitUrl, targetName string, language Language) {
 		log.Println("Unable to get the current working directory：" + err.Error())
 		return
 	}
-	dir, err := os.Stat(filepath.Join(cwd, targetName))
-	if !os.IsNotExist(err) || dir.IsDir() {
-		fmt.Printf("⚠️ %s already exists.", targetName)
+	targetPath := filepath.Join(cwd, targetName)
+	if _, err := os.Stat(targetPath); err == nil {
+		fmt.Printf("⚠️ %s already exists\n", targetName)
+		return
+	} else if !os.IsNotExist(err) {
+		fmt.Printf("❌ Failed to check if %s exists: %v\n", targetName, err)
 		return
 	}
 	repo, err := CloneRepo(Repo{
