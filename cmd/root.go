@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/manifoldco/promptui"
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/smash-hq/scrape-cli/utils"
 	"github.com/spf13/cobra"
 	"os"
@@ -81,29 +81,37 @@ func createTemplate() {
 }
 
 func interactiveCreateTemplate() {
-	// 交互选择模板
-	prompt := promptui.Select{
-		Label: "Select a template",
-		Items: utils.GetProjects(),
+	var selected string
+	var projectName string
+
+	// 选择模板
+	templates := utils.GetProjects()
+	templatePrompt := &survey.Select{
+		Message: "Select a template",
+		Help:    "Select the project code template you want",
+		Default: string(utils.ProjectStartWithGolang),
+		Options: templates,
 	}
-	_, templateResult, err := prompt.Run()
-	if err != nil {
-		fmt.Printf("Prompt failed: %v\n", err)
+	if err := survey.AskOne(templatePrompt, &selected); err != nil {
+		fmt.Printf("❌ Template selection failed: %v\n", err)
 		return
 	}
-	template = utils.Project(templateResult)
+	template = utils.Project(selected)
 
 	// 输入项目名
-	namePrompt := promptui.Prompt{
-		Label:   "Project name",
+	namePrompt := &survey.Input{
+		Message: "Enter the name of the template",
 		Default: defaultActorName,
+		Help: "If it is blank, the default name will be used\n" +
+			"1. Only lowercase English letters (a–z) are allowed.\n" +
+			"2. Hyphens `-` and underscores `_` are permitted as separators.\n" +
+			"3. No uppercase letters, numbers, spaces, special characters, or non-English characters (e.g. Chinese) are allowed.",
 	}
-	projectNameResult, err := namePrompt.Run()
-	if err != nil {
-		fmt.Printf("Prompt failed: %v\n", err)
+	if err := survey.AskOne(namePrompt, &projectName); err != nil {
+		fmt.Printf("❌ Project name input failed: %v\n", err)
 		return
 	}
-	templateName = projectNameResult
+	templateName = projectName
 
 	createTemplate()
 }

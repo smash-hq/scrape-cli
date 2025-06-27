@@ -6,10 +6,16 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
 func CreateTemplate(url gitUrl, targetName string, language Language) {
+	if !isValidDirName(targetName) {
+		fmt.Printf("Illegal project name: %s", targetName)
+		return
+	}
+
 	cwd, err := os.Getwd()
 	if err != nil {
 		log.Println("Unable to get the current working directory：" + err.Error())
@@ -121,4 +127,10 @@ func updateModFile(dir, name string) error {
 		return fmt.Errorf("❌ Failed to write go.mod: %v", err)
 	}
 	return nil
+}
+
+var dirNameRegexp = regexp.MustCompile(`^[a-z_-]+$`)
+
+func isValidDirName(name string) bool {
+	return dirNameRegexp.MatchString(name)
 }
