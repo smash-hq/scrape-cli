@@ -16,6 +16,18 @@
 
 ## 📦 Installation
 
+### Using the install script (recommended)
+You can quickly install the latest release via our bash install script (Linux/macOS/Windows Git Bash):
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/smash-hq/scrape-cli/main/install-scrape-cli.sh)
+```
+This script will:
+- Automatically detect your OS and architecture
+- Download the latest scrape-cli release
+- Extract the binary and install it to ~/.local/bin
+- Add ~/.local/bin to your PATH if it’s not already set (for Linux/macOS)
+- Show instructions on how to add to PATH manually on Windows
+
 ### From source (requires Go 1.18+)
 
 ```bash
@@ -28,7 +40,7 @@ go install github.com/smash-hq/scrape-cli@latest
 
 Just run:
 
-```
+```bash
 scrape-cli --create
 ```
 
@@ -43,20 +55,20 @@ You’ll be guided to:
 
 Fully automate project generation with flags:
 
-```
+```bash
 scrape-cli --tmpl start_with_golang --name my-actor
 ```
 
 Creates a folder **my-actor** using the Golang actor template.
 Run your actor:
-```
+```bash
 cd my-actor
 scrape-cli --run
 ```
 
 ### 📌 3. Show Version
 
-```
+```bash
 scrape-cli --version
 ```
 
@@ -94,6 +106,6 @@ scrape-cli --run
 
 ## 🛠️ Development
 
-```
+```bash
 go run main.go --create
 ```
